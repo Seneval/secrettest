@@ -1,0 +1,20 @@
+{
+	"geolocation": {
+		"data": {
+			"city": "San Nicolás de los Garza",
+			"country": {
+				"code": "MX",
+				"name": "Mexico"
+			},
+			"subdivision": {
+				"code": "NLE",
+				"name": "Nuevo León"
+			},
+			"timezone": "America/Monterrey",
+			"latitude": 25.7633,
+			"longitude": -100.2783,
+			"postalCode": "66460"
+		},
+		"timestamp": 1732998365993
+	}
+}
