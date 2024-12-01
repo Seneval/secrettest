@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import ChatInput from './components/ChatInput';
 import ChatMessage from './components/ChatMessage';
 
@@ -15,23 +15,26 @@ const App = () => {
     setMessages((prev) => [...prev, userMessage]); // Add user's message to the UI
 
     try {
-      // Call the Netlify serverless function
       const res = await fetch('/.netlify/functions/sendMessage', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message }), // Send user message to function
       });
+
+      if (!res.ok) {
+        throw new Error(`Server error: ${res.status}`);
+      }
+
       const data = await res.json();
 
       if (data.response) {
-        // Add the assistant's response to the UI
         const assistantMessage: Message = {
           role: 'assistant',
           content: data.response,
         };
         setMessages((prev) => [...prev, assistantMessage]);
       } else {
-        console.error('Error from serverless function:', data.error);
+        console.error('Function error:', data.error);
       }
     } catch (error) {
       console.error('Error communicating with OpenAI:', error);

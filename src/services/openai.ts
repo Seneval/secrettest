@@ -25,11 +25,22 @@ export async function sendMessage(content: string) {
   // Poll for the response
   let runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
   while (runStatus.status !== 'completed') {
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait before polling again
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait 1 second before polling again
     runStatus = await openai.beta.threads.runs.retrieve(threadId, run.id);
   }
 
   // Retrieve the latest messages
   const messages = await openai.beta.threads.messages.list(threadId);
-  return messages.data[0].content[0].text.value; // Return the assistant's response
+  const lastMessage = messages.data[0];
+
+  // Safely handle 'text' property
+  if (
+    lastMessage.content[0] &&
+    'text' in lastMessage.content[0] && // Check if 'text' exists in the content block
+    lastMessage.content[0].text
+  ) {
+    return lastMessage.content[0].text.value; // Return the text response if available
+  }
+
+  return 'No valid text response'; // Fallback if no text content is found
 }
